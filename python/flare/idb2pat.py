@@ -239,7 +239,7 @@ def make_func_sig(config, func):
 
     crc_data = [0 for i in xrange(256)]
     # for 255 bytes starting at index 32, or til end of function, or variable byte
-    for i in xrange(32, min(func.endEA - func.startEA, 255 + 32)):
+    for i in xrange(32, min(func.endEA - func.startEA, 255) + 32):
         if i in variable_bytes:
             break
         crc_data[i - 32] = get_byte(func.startEA + i)
@@ -356,7 +356,7 @@ def make_func_sigs(config):
         n = get_func_qty()
         for i, f in enumerate(get_functions()):
             try:
-                logger.info("[ %d / %d ] %s %s", i, n, get_name(0, f.startEA), hex(f.startEA))
+                logger.info("[ %d / %d ] %s %s", i + 1, n, get_name(0, f.startEA), hex(f.startEA))
                 sigs.append(make_func_sig(config, f))
             except FuncTooShortException:
                 pass
