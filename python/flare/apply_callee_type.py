@@ -43,6 +43,7 @@ import jayutils
 
 from apply_callee_type_widget import Ui_ApplyCalleeDialog
 
+
 def predFunc(*args):
     print 'Running predFunc: %s' % str(args)
 
@@ -212,8 +213,14 @@ class ApplyCalleeTypeRunner(object):
         return tinfo
 
 
+    def convertUserType(self, stin):
+        #get rid of param type macros ida can't parse
+        for sub in MSDN_MACROS:
+            stin = stin.replace(sub, '')
+        return stin
 
     def run(self):
+        self.logger.info('Starting up')
         try:
             here = idc.here()
             self.logger.info('Using ea: 0x%08x', here)
@@ -239,7 +246,8 @@ class ApplyCalleeTypeRunner(object):
             tinfo = None
             #check user input type
             if dlg.inputType == dlg.USER_TYPE:
-                tinfo = self.getUserDeclType(str(dlg.getUserText()))
+                decl = self.convertUserType(str(dlg.getUserText()))
+                tinfo = self.getUserDeclType(decl)
             elif dlg.inputType == dlg.STANDARD_TYPE:
                 tinfo = self.getBuiltinGlobalType()
             elif dlg.inputType == dlg.LOCAL_TYPE:
@@ -304,8 +312,8 @@ class ApplyCalleeTypeWidget(QtGui.QDialog):
 
 
 def main():
-    #logger = jayutils.configLogger('', logging.DEBUG)
-    logger = jayutils.configLogger('', logging.INFO)
+    logger = jayutils.configLogger('', logging.DEBUG)
+    #logger = jayutils.configLogger('', logging.INFO)
     launcher = ApplyCalleeTypeRunner()
     launcher.run()
 
