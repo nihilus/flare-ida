@@ -509,6 +509,57 @@ for c in input_string {
 }
 '''
 
+def add1505Shl5Hash32(inString,fName):
+  val = 0x1505
+  for ch in inString:
+    val += (val << 5)
+    val &= 0xFFFFFFFF
+    val += ord(ch)
+    val &= 0xFFFFFFFF
+  return val
+
+pseudocode_add1505Shl5Hash32 = '''val := 0x1505;
+for c in input_string {
+   val := val +  (val << 5);
+   val := val + c;
+}
+'''
+
+def rol7XorHash32(inString,fName):
+    if inString is None:
+        return 0
+    val = 0
+    for i in inString:
+        val = rol(val, 0x7, 32)
+        val = val ^ (0xff & ord(i))
+    return val
+
+pseudocode_rol7XorHash32 = '''acc := 0;
+for c in input_string {
+   acc := ROL(acc, 7):
+   acc := acc ^ c;
+}
+'''
+
+def rol7AddXor2Hash32(inString,fName):
+    if inString is None:
+        return 0
+    val = 0
+    for i in inString:
+        val = rol(val, 0x7, 32)
+        val += (ord(i) ^ 2)
+    return val
+
+pseudocode_rol7AddXor2Hash32 = '''acc := 0;
+for c in input_string {
+   acc := ROL(acc, 7):
+   acc := acc + (c ^ 2);
+}
+'''
+
+
+
+
 
 # The list of tuples of (supported hash name, hash size, pseudo_code)
 HASH_TYPES = [
@@ -528,6 +579,9 @@ HASH_TYPES = [
     ('playWith0xedb88320Hash',  32, pseudocode_playWith0xedb88320Hash),
     ('crc32',                   32, 'Standard crc32'),
     ('mult21AddHash32',         32, pseudocode_hashMult21),
+    ('add1505Shl5Hash32',       32, pseudocode_add1505Shl5Hash32),
+    ('rol7XorHash32',           32, pseudocode_rol7XorHash32),
+    ('rol7AddXor2Hash32',       32, pseudocode_rol7AddXor2Hash32),
 ]
 
 
